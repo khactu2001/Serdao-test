@@ -5,19 +5,23 @@ import HomeScreen from './src/modules/home/HomeScreen';
 import {TransactionProvider} from './src/modules/transactions/TransactionContext';
 import TransactionScreen from './src/modules/transactions/TransactionScreen';
 import BeneficiaryScreen from './src/modules/beneficiaries/BeneficiaryScreen';
+import {BeneficiaryProvider} from './src/modules/beneficiaries/BeneficiaryContext';
+import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 const Stack = createNativeStackNavigator();
 
 const App = () => {
   return (
     <TransactionProvider>
-      <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen name="Home" component={HomeScreen} />
-          <Stack.Screen name="Transaction" component={TransactionScreen} />
-          <Stack.Screen name="Beneficiary" component={BeneficiaryScreen} />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <BeneficiaryProvider>
+        <NavigationContainer>
+          <Stack.Navigator>
+            <Stack.Screen name="Home" component={HomeScreen} />
+            <Stack.Screen name="Transaction" component={TransactionScreen} />
+            <Stack.Screen name="Beneficiary" component={BeneficiaryScreen} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </BeneficiaryProvider>
     </TransactionProvider>
   );
 };

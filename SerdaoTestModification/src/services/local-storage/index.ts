@@ -3,28 +3,29 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export const LOCAL_KEYS = {
   TRANSACTIONS: 'transactions',
   BALANCE: 'balance',
+  BENEFICIARIES: 'beneficiaries',
 };
 
 class LocalStorage {
-  async getItem(key: string) {
-    const item = await AsyncStorage.getItem(key);
-    return item;
-  }
+  // Save data to AsyncStorage
+  saveData = async (key: string, value: any) => {
+    try {
+      const jsonValue = JSON.stringify(value);
+      await AsyncStorage.setItem(key, jsonValue);
+    } catch (e) {
+      console.error("Error saving data", e);
+    }
+  };
 
-  async setItem(key: string, value: string) {
-    await AsyncStorage.setItem(key, value);
-  }
-
-  // async getTransactions(key: string) {
-  //   const transactions = await this.getItem(LOCAL_KEYS.TRANSACTIONS);
-  //   return transactions ? JSON.parse(transactions) : [];
-  // }
-
-  // async getBalance() {
-  //   const balance = await this.getItem(LOCAL_KEYS.BALANCE);
-  //   return balance ? parseFloat(balance) : 0;
-  // }
-
+  // Retrieve data from AsyncStorage
+  getData = async (key: string) => {
+    try {
+      const jsonValue = await AsyncStorage.getItem(key);
+      return jsonValue != null ? JSON.parse(jsonValue) : null;
+    } catch (e) {
+      console.error("Error retrieving data", e);
+    }
+  };
 }
 const localStorage = new LocalStorage();
 export default localStorage;

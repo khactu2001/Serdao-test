@@ -23,14 +23,16 @@ const HomeScreen = ({navigation}) => {
       <Text style={styles.balanceText}>
         Current Balance: ${balance.toFixed(2)}
       </Text>
-      <Button
-        title="Add Transaction"
-        onPress={() => navigation.navigate('Transaction')}
-      />
-      <Button
-        title="Add Beneficiary"
-        onPress={() => navigation.navigate('Beneficiary')}
-      />
+      <View style={styles.row}>
+        <Button
+          title="Add Transaction"
+          onPress={() => navigation.navigate('Transaction')}
+        />
+        <Button
+          title="Beneficiary List"
+          onPress={() => navigation.navigate('Beneficiary')}
+        />
+      </View>
       <FlatList
         data={transactions}
         keyExtractor={item => item.id.toString()}
@@ -47,6 +49,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     paddingTop: 20,
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 10,
   },
   balanceText: {
     fontSize: 18,
