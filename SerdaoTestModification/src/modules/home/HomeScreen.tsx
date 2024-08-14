@@ -1,11 +1,12 @@
 import React from 'react';
 import {View, Text, Button, FlatList, StyleSheet} from 'react-native';
 import {useTransactions} from '../transactions/TransactionContext';
+import {Transaction} from '../transactions/type';
 
-const HomeScreen = ({navigation}) => {
+const HomeScreen = ({navigation}: {navigation: any}) => {
   const {transactions, balance} = useTransactions();
 
-  const renderItem = ({item}) => (
+  const renderItem = ({item}: {item: Transaction}) => (
     <View style={styles.item}>
       <Text style={styles.itemText}>Transaction ID: {item.id}</Text>
       <Text style={styles.itemText}>Amount: ${item.amount.toFixed(2)}</Text>

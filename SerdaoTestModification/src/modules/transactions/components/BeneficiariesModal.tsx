@@ -9,6 +9,7 @@ import {
   View,
 } from 'react-native';
 import {useBeneficiaries} from '../../beneficiaries/BeneficiaryContext';
+import {Beneficiary} from '../../beneficiaries/type';
 
 const ic_close = require('../../../assets/ic_close.png');
 
@@ -22,6 +23,7 @@ const BeneficiariesModal = ({
   onSelect: (value: any) => void;
 }) => {
   const {beneficiaries} = useBeneficiaries();
+
   const showModalHeader = () => {
     return (
       <View style={styles.row}>
@@ -34,7 +36,7 @@ const BeneficiariesModal = ({
     );
   };
 
-  const renderItem = ({item}) => {
+  const renderItem = ({item}: {item: Beneficiary}) => {
     const {account} = item;
     const {firstName, lastName, iban} = account;
     const fullname = firstName + ' ' + lastName;

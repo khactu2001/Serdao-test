@@ -6,7 +6,6 @@ import {TransactionProvider} from './src/modules/transactions/TransactionContext
 import TransactionScreen from './src/modules/transactions/TransactionScreen';
 import BeneficiaryScreen from './src/modules/beneficiaries/BeneficiaryScreen';
 import {BeneficiaryProvider} from './src/modules/beneficiaries/BeneficiaryContext';
-import {GestureHandlerRootView} from 'react-native-gesture-handler';
 
 const Stack = createNativeStackNavigator();
 

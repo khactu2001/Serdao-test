@@ -1,18 +1,18 @@
 import React, {useState} from 'react';
 import {
-  View,
-  TextInput,
-  Button,
-  Text,
   Alert,
-  TouchableOpacity,
+  Button,
   Image,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import {useTransactions} from './TransactionContext';
 import {validateIban} from '../../services/validation';
+import {Beneficiary} from '../beneficiaries/type';
+import {useTransactions} from './TransactionContext';
 import BeneficiariesModal from './components/BeneficiariesModal';
 
-const TransactionScreen = ({navigation}) => {
+const TransactionScreen = ({navigation}: {navigation: any}) => {
   const [amount, setAmount] = useState('');
   const [name, setName] = useState('');
   const [iban, setIban] = useState('');
@@ -42,9 +42,8 @@ const TransactionScreen = ({navigation}) => {
     navigation.goBack();
   };
 
-  const onSelectPerson = person => {
+  const onSelectPerson = (person: Beneficiary) => {
     const {account} = person;
-    console.log(person);
     setName(`${account.firstName} ${account.lastName}`);
     setIban(account.iban);
     setModalVisible(false);

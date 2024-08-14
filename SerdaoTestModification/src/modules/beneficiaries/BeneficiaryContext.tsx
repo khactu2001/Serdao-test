@@ -1,14 +1,40 @@
-import React, {createContext, useContext, useState} from 'react';
+import React, {createContext, useContext, useEffect, useState} from 'react';
+import {Beneficiary} from './type';
+import localStorage, {LOCAL_KEYS} from '../../services/local-storage';
 
-const BeneficiaryContext = createContext();
+export type BeneficiaryProps = {
+  beneficiaries: Beneficiary[];
+  addBeneficiary: (account: Beneficiary['account']) => void;
+};
 
-export const useBeneficiaries = () => useContext(BeneficiaryContext);
+export const BeneficiaryContext = createContext<BeneficiaryProps>({
+  beneficiaries: [],
+  addBeneficiary: () => {},
+});
 
-export const BeneficiaryProvider = ({children}) => {
-  const [beneficiaries, setBeneficiaries] = useState([]);
+export const useBeneficiaries = () => {
+  return useContext(BeneficiaryContext);
+};
 
-  const addBeneficiary = account => {
-    const newBeneficiary = {
+export const BeneficiaryProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  const [beneficiaries, setBeneficiaries] = useState<Beneficiary[]>([]);
+
+  useEffect(() => {
+    const loadInitialBeneficiaries = async () => {
+      const data = await localStorage.getData(LOCAL_KEYS.BENEFICIARIES);
+      if (data) {
+        setBeneficiaries(data); // Update state after data is loaded
+      }
+    };
+    loadInitialBeneficiaries();
+  }, []);
+
+  const addBeneficiary = (account: Beneficiary['account']) => {
+    const newBeneficiary: Beneficiary = {
       id: Date.now(),
       account,
     };
@@ -17,7 +43,6 @@ export const BeneficiaryProvider = ({children}) => {
       newBeneficiary,
     ]);
   };
-  console.log(beneficiaries);
 
   return (
     <BeneficiaryContext.Provider value={{beneficiaries, addBeneficiary}}>

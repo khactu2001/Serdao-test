@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Alert,
   Button,
@@ -10,15 +10,19 @@ import {
 } from 'react-native';
 import {validateIban} from '../../services/validation';
 import {useBeneficiaries} from './BeneficiaryContext';
-var IBAN = require('iban');
-console.log(IBAN.isValid('hello world')); // false
-console.log(IBAN.isValid('BE68539007547034')); // true')
+import {Beneficiary} from './type';
+import localStorage, {LOCAL_KEYS} from '../../services/local-storage';
 
-const BeneficiaryScreen = ({navigation}) => {
-  const [firstName, setFirstName] = useState('123');
-  const [lastName, setLastName] = useState('123');
-  const [iban, setIban] = useState('BE68539007547034');
+const BeneficiaryScreen = () => {
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [iban, setIban] = useState('');
+
   const {addBeneficiary, beneficiaries} = useBeneficiaries();
+
+  useEffect(() => {
+    localStorage.saveData(LOCAL_KEYS.BENEFICIARIES, beneficiaries);
+  }, [beneficiaries]);
 
   const resetFields = () => {
     setFirstName('');
@@ -30,6 +34,8 @@ const BeneficiaryScreen = ({navigation}) => {
     const firstNameTrimmed = firstName.trim();
     const lastNameTrimmed = lastName.trim();
     const ibanTrimmed = iban.trim();
+
+    // validate fields
     if (
       firstNameTrimmed.trim() === '' ||
       lastNameTrimmed.trim() === '' ||
@@ -41,29 +47,34 @@ const BeneficiaryScreen = ({navigation}) => {
     if (!validateIban(ibanTrimmed)) {
       Alert.alert(
         'Error',
-        'Invalid IBAN. Please enter a valid IBAN in format BE68539007547034',
+        'Invalid IBAN. Please enter a valid IBAN in format. Ex: BE68539007547034',
       );
       return;
     }
-    const accountDetails = {
+    const accountDetails: Beneficiary['account'] = {
       firstName: firstNameTrimmed,
       lastName: lastNameTrimmed,
       iban: ibanTrimmed,
     };
+
+    // add beneficiary
     addBeneficiary(accountDetails);
 
-    // open this comment
-    // resetFields();
+    // clear fields
+    resetFields();
   };
 
-  const renderItem = ({item}) => (
+  const renderItem = ({item}: {item: Beneficiary}) => (
     <View style={styles.item}>
       <Text style={styles.itemText}>Transaction ID: {item.id}</Text>
-      {/* <Text style={styles.itemText}>Amount: ${item.amount.toFixed(2)}</Text> */}
       {item.account && (
         <>
-          <Text style={styles.itemText}>To: {item.account.firstName}</Text>
-          <Text style={styles.itemText}>To: {item.account.lastName}</Text>
+          <Text style={styles.itemText}>
+            First name: {item.account.firstName}
+          </Text>
+          <Text style={styles.itemText}>
+            Last name: {item.account.lastName}
+          </Text>
           <Text style={styles.itemText}>IBAN: {item.account.iban}</Text>
         </>
       )}
