@@ -33,6 +33,10 @@ const TransactionScreen = ({navigation}: {navigation: any}) => {
       return;
     }
     const amountTransaction = parseFloat(amount);
+    if (amountTransaction <= 0) {
+      Alert.alert('Error', 'Amount must be greater than 0');
+      return;
+    }
     if (amountTransaction > balance) {
       Alert.alert('Error', `Insufficient balance. ${balance}$ remaining`);
       return;

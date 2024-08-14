@@ -1,6 +1,6 @@
-import React, {createContext, useState, useContext, useEffect} from 'react';
-import {Transaction} from './type';
+import React, {createContext, useContext, useEffect, useState} from 'react';
 import localStorage, {LOCAL_KEYS} from '../../services/local-storage';
+import {Transaction} from './type';
 
 const TransactionContext = createContext<TransactionProps>({
   transactions: [],
@@ -25,31 +25,39 @@ export const TransactionProvider = ({
 }) => {
   const [transactions, setTransactions] = useState<Transaction[]>([]);
 
-  const [balance, setBalance] = useState(1000);
+  const [balance, setBalance] = useState(0);
 
   useEffect(() => {
     const loadInitialBalance = async () => {
-      const data = await localStorage.getData(LOCAL_KEYS.BALANCE);
-      if (data) {
+      try {
+        const data = await localStorage.getData(LOCAL_KEYS.BALANCE);
+        if (data === null || isNaN(data)) {
+          setBalance(1000);
+          return;
+        }
         setBalance(parseFloat(data)); // Update state after data is loaded
-      }
+      } catch (error) {}
     };
 
     const loadInitialTransactions = async () => {
-      const data = await localStorage.getData(LOCAL_KEYS.TRANSACTIONS);
-      if (data) {
-        setTransactions(data); // Update state after data is loaded
-      }
+      try {
+        const data = await localStorage.getData(LOCAL_KEYS.TRANSACTIONS);
+        if (data) {
+          setTransactions(data); // Update state after data is loaded
+        }
+      } catch (error) {}
     };
 
     loadInitialBalance();
     loadInitialTransactions();
   }, []);
 
-  useEffect(() => {
-    localStorage.saveData(LOCAL_KEYS.TRANSACTIONS, transactions);
-    localStorage.saveData(LOCAL_KEYS.BALANCE, balance);
-  }, [transactions]);
+  const saveTransactions = async (newTransactions: Transaction[]) => {
+    await localStorage.saveData(LOCAL_KEYS.TRANSACTIONS, newTransactions);
+  };
+  const saveBalance = async (newBalance: number) => {
+    await localStorage.saveData(LOCAL_KEYS.BALANCE, newBalance);
+  };
 
   const addTransaction = (amount: string, account: Transaction['account']) => {
     const newTransaction: Transaction = {
@@ -57,8 +65,18 @@ export const TransactionProvider = ({
       amount: parseFloat(amount),
       account,
     };
-    setTransactions(prevTransactions => [...prevTransactions, newTransaction]);
-    setBalance(prevBalance => prevBalance - parseFloat(amount));
+
+    // set and save local transactions
+    setTransactions(prevTransactions => {
+      saveTransactions([...prevTransactions, newTransaction]);
+      return [...prevTransactions, newTransaction];
+    });
+
+    // set and save local balance
+    setBalance(prevBalance => {
+      saveBalance(prevBalance - parseFloat(amount));
+      return prevBalance - parseFloat(amount);
+    });
   };
 
   const updateBalance = (newBalance: number) => {
