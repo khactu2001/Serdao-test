@@ -1,4 +1,4 @@
-# Sedao Test
+# Serdao Test
 
 There are 2 folders: SedaoTest and SedaoTestModification.
 SedaoTest is original project.
