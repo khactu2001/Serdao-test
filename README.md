@@ -1,20 +1,20 @@
 # Serdao Test
 
-There are 2 folders: SedaoTest and SedaoTestModification.
-SedaoTest is original project.
-SedaoTestModification is modified project with requirements.
+There are 2 folders: SerdaoTest and SerdaoTestModification.
+SerdaoTest is original project.
+SerdaoTestModification is modified project with requirements.
 
 ## Installation
 
 ```bash
-cd SedaoTestModification/
+cd SerdaoTestModification/
 yarn install
 cd ios/ && pod install
 ```
 
 ## Launch the project
 
-At the root of SedaoTestModification project, run these:
+At the root of SerdaoTestModification project, run these:
 
 **Android**
 
